@@ -15,9 +15,9 @@ export default function ProfileCard({ profile }: ProfileCardProps) {
         <div className="mt-6">
           <h3 className="text-sm font-medium text-brand-text-subtle">Skills</h3>
           <div className="flex flex-wrap gap-2 mt-2">
-            {profile.skills.map((skill, index) => (
+            {profile.skills.map((skill) => (
               <span
-                key={index}
+                key={skill}
                 className="bg-brand-teal/20 text-brand-teal text-sm font-medium px-3 py-1 rounded-full"
               >
                 {skill}

@@ -71,9 +71,11 @@ export async function parseResumeWithGemini(cvText: string): Promise<UserProfile
 
     const prompt = RESUME_PARSING_PROMPT.replace('{resumeText}', cvText);
 
-    // New API syntax - call generateContent directly on models
+    // Get model name from env or use default
+    const modelName = process.env.GEMINI_MODEL || "models/gemini-2.5-flash";
+
     const response = await ai.models.generateContent({
-      model: "models/gemini-2.5-flash",
+      model: modelName,
       contents: prompt,
       config: {
         temperature: 0.2,  // Low temperature for consistent extraction
@@ -108,7 +110,10 @@ export async function parseResumeWithGemini(cvText: string): Promise<UserProfile
 
     return profile;
   } catch (error) {
-    console.error('Gemini API error:', error);
+    // Log error in development only
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Gemini API error:', error);
+    }
     throw new Error('Failed to parse resume with AI');
   }
 }

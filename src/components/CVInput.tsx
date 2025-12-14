@@ -16,16 +16,20 @@ export default function CVInput({ onSubmit }: CVInputProps) {
 
     setFileName(file.name);
 
-    // For PDF files, you'll need to parse them
-    // Install: npm install pdfjs-dist
-    // For now, we'll just handle text files
-    if (file.type === 'text/plain') {
-      const text = await file.text();
-      setCvText(text);
-    } else if (file.type === 'application/pdf') {
-      // TODO: Implement PDF parsing
-      // You can use pdfjs-dist or send to backend for parsing
-      alert('PDF parsing coming soon! For now, please paste your CV text.');
+    try {
+      if (file.type === 'text/plain') {
+        const text = await file.text();
+        setCvText(text);
+      } else {
+        alert('Please upload a .txt file or paste your resume text directly.');
+        setFileName(null);
+        e.target.value = '';
+      }
+    } catch (error) {
+      console.error('Error reading file:', error);
+      alert('Failed to read file. Please try pasting your resume text instead.');
+      setFileName(null);
+      e.target.value = '';
     }
   };
 
@@ -42,12 +46,22 @@ export default function CVInput({ onSubmit }: CVInputProps) {
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file) {
-      setFileName(file.name);
+    if (!file) return;
+
+    setFileName(file.name);
+
+    try {
       if (file.type === 'text/plain') {
         const text = await file.text();
         setCvText(text);
+      } else {
+        alert('Please upload a .txt file or paste your resume text directly.');
+        setFileName(null);
       }
+    } catch (error) {
+      console.error('Error reading file:', error);
+      alert('Failed to read file. Please try pasting your resume text instead.');
+      setFileName(null);
     }
   };
 
@@ -76,7 +90,7 @@ export default function CVInput({ onSubmit }: CVInputProps) {
         <label className="cursor-pointer">
           <input
             type="file"
-            accept=".txt,.pdf"
+            accept=".txt"
             onChange={handleFileChange}
             className="hidden"
           />

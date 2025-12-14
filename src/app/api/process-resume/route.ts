@@ -28,9 +28,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse resume with Gemini (REPLACES MOCK DATA)
+    // Parse resume with AI
     const profile = await parseResumeWithGemini(cvText);
 
+    // TODO: Replace with real job board API integration (JSearch, etc.)
+    // Currently returning placeholder data for demonstration
     const jobMatches = [
       {
         id: '1',
@@ -63,7 +65,10 @@ export async function POST(request: NextRequest) {
       jobMatches,
     });
   } catch (error) {
-    console.error('Error processing resume:', error);
+    // Log error for debugging (server-side logs)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error processing resume:', error);
+    }
 
     if (error instanceof Error && error.message.includes('Failed to parse resume with AI')) {
       return NextResponse.json(

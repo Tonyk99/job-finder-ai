@@ -22,15 +22,19 @@ export default function Header() {
         <span className="text-xl font-bold text-white">Job Finder AI</span>
       </div>
 
-      {/* Navigation Links and Login Button */}
+      {/* Navigation - Coming Soon */}
       <nav className="flex items-center space-x-6">
-        <a className="text-brand-text-subtle hover:text-white transition-colors" href="#">
+        <span className="text-brand-text-subtle opacity-50 cursor-not-allowed" title="Coming soon">
           How it works
-        </a>
-        <a className="text-brand-text-subtle hover:text-white transition-colors" href="#">
+        </span>
+        <span className="text-brand-text-subtle opacity-50 cursor-not-allowed" title="Coming soon">
           Pricing
-        </a>
-        <button className="bg-gray-200 text-gray-900 font-semibold px-5 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+        </span>
+        <button
+          className="bg-gray-200 text-gray-900 font-semibold px-5 py-2 rounded-lg opacity-50 cursor-not-allowed"
+          disabled
+          title="Coming soon"
+        >
           Login
         </button>
       </nav>
