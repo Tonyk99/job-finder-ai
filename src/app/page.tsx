@@ -7,41 +7,6 @@ import ProfileCard from '@/components/ProfileCard';
 import JobCard from '@/components/JobCard';
 import { UserProfile, JobMatch } from '@/types';
 
-// Mock data for initial display
-const mockProfile: UserProfile = {
-  skills: ['Python', 'Django', 'React', 'SQL', 'Docker'],
-  location: 'Tokyo, Japan',
-  experienceLevel: 'Junior-Mid Level',
-  summary: 'Backend-focused web developer with full-stack experience in Python (Django) and JavaScript (React) environments.',
-};
-
-const mockJobs: JobMatch[] = [
-  {
-    id: '1',
-    title: 'Backend Developer',
-    company: 'Stripe',
-    location: 'Tokyo, Japan',
-    salary: '$120,000 - $150,000',
-    matchReasons: ['Python', 'Django', 'Tokyo location match'],
-  },
-  {
-    id: '2',
-    title: 'Full-Stack Engineer',
-    company: 'Mercari',
-    location: 'Tokyo, Japan',
-    salary: '¥8,000,000 - ¥11,000,000',
-    matchReasons: ['React', 'Python', 'Tokyo location match'],
-  },
-  {
-    id: '3',
-    title: 'Frontend Developer (React)',
-    company: 'Notion (Remote)',
-    location: 'Japan',
-    salary: '$110,000 - $140,000',
-    matchReasons: ['React', 'Japan location match'],
-  },
-];
-
 export default function Home() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [jobs, setJobs] = useState<JobMatch[]>([]);

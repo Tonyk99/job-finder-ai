@@ -1,30 +1,27 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { UserProfile } from '@/types';
 
-let genAI: GoogleGenerativeAI | null = null;
+let ai: GoogleGenAI | null = null;
 
 /**
  * Initialize the Gemini AI client (singleton pattern)
- * @returns GoogleGenerativeAI instance
+ * @returns GoogleGenAI instance
  * @throws Error if GEMINI_API_KEY is not configured
  */
-function initializeGemini(): GoogleGenerativeAI {
-  if (!genAI) {
+function initializeGemini(): GoogleGenAI {
+  if (!ai) {
+    // Check if API key exists
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY not configured');
     }
-    genAI = new GoogleGenerativeAI(apiKey);
+    // Initialize with explicit API key
+    ai = new GoogleGenAI({ apiKey });
   }
-  return genAI;
+  return ai;
 }
 
-/**
- * Comprehensive prompt for extracting structured data from resumes
- * Supports both English and Japanese resumes
- */
-const RESUME_PARSING_PROMPT = `
-You are an expert resume parser that extracts structured information from resumes in both English and Japanese.
+const RESUME_PARSING_PROMPT = `You are an expert resume parser that extracts structured information from resumes in both English and Japanese.
 
 TASK: Extract ALL information from the following resume and return it as a JSON object.
 
@@ -60,8 +57,7 @@ INSTRUCTIONS:
 RESUME TEXT:
 {resumeText}
 
-Return ONLY the JSON object, no additional text.
-`;
+Return ONLY the JSON object, no additional text.`;
 
 /**
  * Parse a resume using Google Gemini AI
@@ -71,19 +67,26 @@ Return ONLY the JSON object, no additional text.
  */
 export async function parseResumeWithGemini(cvText: string): Promise<UserProfile> {
   try {
-    const genAI = initializeGemini();
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
+    const ai = initializeGemini();
+
+    const prompt = RESUME_PARSING_PROMPT.replace('{resumeText}', cvText);
+
+    // New API syntax - call generateContent directly on models
+    const response = await ai.models.generateContent({
+      model: "models/gemini-2.5-flash",
+      contents: prompt,
+      config: {
         temperature: 0.2,  // Low temperature for consistent extraction
         responseMimeType: "application/json"
       }
     });
 
-    const prompt = RESUME_PARSING_PROMPT.replace('{resumeText}', cvText);
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    // New API has .text property directly on response
+    const text = response.text;
+
+    if (!text) {
+      throw new Error('No response text from Gemini API');
+    }
 
     // Parse and validate JSON
     const parsed = JSON.parse(text);
